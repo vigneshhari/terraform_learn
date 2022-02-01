@@ -12,14 +12,28 @@ resource "aws_internet_gateway" "IGW" { # Creating Internet Gateway
   vpc_id = aws_vpc.Main.id              # vpc_id will be generated after we create VPC
 }
 
-resource "aws_subnet" "publicsubnets" { # Creating Public Subnets
+resource "aws_subnet" "publicsubnet_1" { # Creating Public Subnets
   vpc_id     = aws_vpc.Main.id
-  cidr_block = var.public_subnets # CIDR block of public subnets
+  cidr_block = var.public_subnet_1
+  availability_zone = data.aws_availability_zones.available.names[0]
 }
-resource "aws_subnet" "privatesubnets" {
+resource "aws_subnet" "privatesubnet_1" {
   vpc_id     = aws_vpc.Main.id
-  cidr_block = var.private_subnets # CIDR block of private subnets
+  cidr_block = var.private_subnet_1
+  availability_zone = data.aws_availability_zones.available.names[0]
 }
+
+resource "aws_subnet" "publicsubnet_2" {
+  vpc_id     = aws_vpc.Main.id
+  cidr_block = var.public_subnet_2
+  availability_zone = data.aws_availability_zones.available.names[1]
+}
+resource "aws_subnet" "privatesubnet_2" {
+  vpc_id     = aws_vpc.Main.id
+  cidr_block = var.private_subnet_2
+  availability_zone = data.aws_availability_zones.available.names[1]
+}
+
 resource "aws_route_table" "PublicRT" { # Creating RT for Public Subnet
   vpc_id = aws_vpc.Main.id
   route {
@@ -34,18 +48,28 @@ resource "aws_route_table" "PrivateRT" { # Creating RT for Private Subnet
     nat_gateway_id = aws_nat_gateway.NATgw.id
   }
 }
-resource "aws_route_table_association" "PublicRTassociation" {
-  subnet_id      = aws_subnet.publicsubnets.id
+resource "aws_route_table_association" "PublicRTassociation_1" {
+  subnet_id      = aws_subnet.publicsubnet_1.id
   route_table_id = aws_route_table.PublicRT.id
 }
-resource "aws_route_table_association" "PrivateRTassociation" {
-  subnet_id      = aws_subnet.privatesubnets.id
+resource "aws_route_table_association" "PublicRTassociation_2" {
+  subnet_id      = aws_subnet.publicsubnet_2.id
+  route_table_id = aws_route_table.PublicRT.id
+}
+
+resource "aws_route_table_association" "PrivateRTassociation_1" {
+  subnet_id      = aws_subnet.privatesubnet_1.id
   route_table_id = aws_route_table.PrivateRT.id
 }
-resource "aws_eip" "nateIP" {
+resource "aws_route_table_association" "PrivateRTassociation_2" {
+  subnet_id      = aws_subnet.privatesubnet_2.id
+  route_table_id = aws_route_table.PrivateRT.id
+}
+resource "aws_eip" "nateIP_1" {
   vpc = true
 }
+
 resource "aws_nat_gateway" "NATgw" {
-  allocation_id = aws_eip.nateIP.id
-  subnet_id     = aws_subnet.publicsubnets.id
+  allocation_id = aws_eip.nateIP_1.id
+  subnet_id     = aws_subnet.publicsubnet_1.id
 }

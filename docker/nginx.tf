@@ -4,6 +4,10 @@ resource "aws_cloudwatch_log_group" "web" {
   name = "${var.app}-${terraform.workspace}-web"
 }
 
+resource "aws_ecs_cluster" "my_cluster" {
+  name = "my-cluster" # Naming the cluster
+}
+
 resource "aws_ecs_task_definition" "web" {
   family                   = "${var.app}-web-${terraform.workspace}"
   requires_compatibilities = ["FARGATE"]
@@ -20,7 +24,6 @@ resource "aws_ecs_task_definition" "web" {
         "cpu": 256,
         "memory": 512,
         "essential": true,
-        "command": ["/opt/app/crowdstrike/runserver.sh"],
         "portMappings": [
           {
             "protocol": "tcp",
@@ -35,14 +38,14 @@ resource "aws_ecs_task_definition" "web" {
 
 resource "aws_ecs_service" "web" {
   name            = "${var.app}-web-${terraform.workspace}"
-  cluster         = var.cluster_id
+  cluster         = "${aws_ecs_cluster.my_cluster.id}"             # Referencing our created Cluster
   launch_type     = "FARGATE"
   task_definition = aws_ecs_task_definition.web.arn
   desired_count   = 1
 
   network_configuration {
     security_groups = [aws_security_group.nsg_task.id]
-    subnets         = [aws_subnet.privatesubnets.id, aws_subnet.publicsubnets.id]
+    subnets         = [aws_subnet.privatesubnet_1.id , aws_subnet.privatesubnet_2.id]
   }
 
   load_balancer {
