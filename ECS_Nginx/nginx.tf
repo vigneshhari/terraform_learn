@@ -1,4 +1,4 @@
-
+# ECS Configs
 
 resource "aws_cloudwatch_log_group" "web" {
   name = "${var.app}-${terraform.workspace}-web"

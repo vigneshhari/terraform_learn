@@ -1,4 +1,4 @@
-This terraform project deploys a simple nginx application in AWS using ECS ( Elastic Container Service ). All prerequisites are automatically made by the terraform script including VPC's, Security Groups, IAM policies, ECS tasks, LB's, etc..   
+This terraform project deploys a simple nginx application in AWS using ECS ( Elastic Container Service ). All prerequisites are automatically made by the terraform script including VPC's, Security Groups, IAM policies, ECS tasks, LB's, etc..  
 
 This project uses local state with terraform, given its for demonstration. We can use remote state when working on complex projects with multiple contributors.  
 

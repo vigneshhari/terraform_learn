@@ -1,3 +1,5 @@
+# Load balancer Configs
+
 resource "aws_lb" "main" {
   name               = "${var.app}-${terraform.workspace}"
   load_balancer_type = "application"

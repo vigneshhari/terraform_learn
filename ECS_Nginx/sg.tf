@@ -1,3 +1,5 @@
+# Security group configs
+
 resource "aws_security_group" "nsg_lb" {
   name   = "${var.app}-${terraform.workspace}"
   vpc_id = aws_vpc.Main.id
