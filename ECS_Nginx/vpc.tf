@@ -1,5 +1,6 @@
-resource "aws_vpc" "Main" {                # Creating VPC here
-  cidr_block           = var.main_vpc_cidr # Defining the CIDR block use 10.0.0.0/24 for demo
+# VPC
+resource "aws_vpc" "Main" {                
+  cidr_block           = var.main_vpc_cidr
   instance_tenancy     = "default"
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -8,9 +9,13 @@ resource "aws_vpc" "Main" {                # Creating VPC here
   }
 }
 
-resource "aws_internet_gateway" "IGW" { # Creating Internet Gateway
-  vpc_id = aws_vpc.Main.id              # vpc_id will be generated after we create VPC
+# Internet gateway
+
+resource "aws_internet_gateway" "IGW" { 
+  vpc_id = aws_vpc.Main.id              
 }
+
+# Subnets
 
 resource "aws_subnet" "publicsubnet_1" { # Creating Public Subnets
   vpc_id     = aws_vpc.Main.id
@@ -33,6 +38,8 @@ resource "aws_subnet" "privatesubnet_2" {
   cidr_block = var.private_subnet_2
   availability_zone = data.aws_availability_zones.available.names[1]
 }
+
+# Route Tables
 
 resource "aws_route_table" "PublicRT" { # Creating RT for Public Subnet
   vpc_id = aws_vpc.Main.id
@@ -65,6 +72,9 @@ resource "aws_route_table_association" "PrivateRTassociation_2" {
   subnet_id      = aws_subnet.privatesubnet_2.id
   route_table_id = aws_route_table.PrivateRT.id
 }
+
+# NAT's
+
 resource "aws_eip" "nateIP_1" {
   vpc = true
 }

@@ -10,8 +10,7 @@ terraform {
 }
 
 provider "aws" {
-  profile = "sa-dev"
-  region  = "ap-southeast-1"
+  region  = "us-east-1"
 }
 
 
@@ -42,14 +41,4 @@ resource "aws_security_group" "allow_http_https" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-}
-
-
-resource "aws_instance" "app_server" {
-  ami           = "ami-055d15d9cfddf7bd3"
-  instance_type = "t2.micro"
-  subnet_id     = aws_subnet.publicsubnet_1.id
-  tags = {
-    Name = "ExampleAppServerInstance"
-  }
 }
