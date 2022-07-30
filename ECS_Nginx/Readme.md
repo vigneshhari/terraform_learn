@@ -25,6 +25,3 @@ To delete everything created by this script, run
 ```bash
 terraform destroy
 ```
-
-Note -  
-This project was designed to run in AWS in the `us-east-1` region, changing regions might require changes in the AMI ID.
